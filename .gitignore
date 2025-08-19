@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.sqlite3
+*.log
+*.pot
+*.mo
+*.so
+*.egg-info/
+*.egg
+
+# Virtualenv
+env/
+venv/
+ENV/
+.venv/
+
+# VSCode
+.vscode/
+
+# macOS/Linux
+.DS_Store
+*.swp
+*.swo
+
+# Pytest
+.cache/
+
+# Django stuff
+*.db
+db.sqlite3
+media/
+staticfiles/
+local_settings.py
+
+# Environment variables
+.env
+
+# Migrations
+**/migrations/*.py
+!**/migrations/__init__.py
