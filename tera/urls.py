@@ -22,7 +22,7 @@ urlpatterns = [
     # path("api/protectors/", include("protector.urls")),
     # path("api/drivers/", include("driver.urls")),
     # path("api/terminals/", include("terminal.urls")),
-    # path("api/turns/", include("queue.urls")),
+    # # path("api/turns/", include("queue.urls")),
     # path("api/departures/", include("departure.urls")),
     # path("api/shift/", include("shift.urls")),
     # path("api/routes/", include("route.urls")),
