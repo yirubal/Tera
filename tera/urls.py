@@ -35,6 +35,7 @@ urlpatterns = [
     path("api/protector/", include("protector.urls")),
     path("api/driver/", include("driver.urls")),
     path("api/terminals/", include("terminal.urls")),
+    path("api/route/", include("route.urls")),
     
 
 ]
