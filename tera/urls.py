@@ -34,6 +34,7 @@ urlpatterns = [
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/protector/", include("protector.urls")),
     path("api/driver/", include("driver.urls")),
+    path("api/terminals/", include("terminal.urls")),
     
 
 ]
