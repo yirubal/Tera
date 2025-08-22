@@ -6,3 +6,4 @@ urlpatterns = [
     path("me",       ProtectorProfileView.as_view()),
     path("list",     ProtectorListView.as_view()),   # optional/admin
 ]
+
