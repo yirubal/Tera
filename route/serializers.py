@@ -3,8 +3,8 @@ from  route.models import Route
 from terminal.models import Terminal
 
 class RouteSerializer(serializers.ModelSerializer):
-    from_terminal = serializers.PrimaryKeyRelatedField(queryset = Terminal.objects.all())
-    to_terminal = serializers.PrimaryKeyRelatedField(queryset = Terminal.objects.all())
+    from_terminal = serializers.SlugRelatedField(queryset = Terminal.objects.all(), slug_field="name")
+    to_terminal = serializers.SlugRelatedField(queryset = Terminal.objects.all(), slug_field="name")
 
     created_by_protector = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
