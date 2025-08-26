@@ -36,6 +36,6 @@ urlpatterns = [
     path("api/driver/", include("driver.urls")),
     path("api/terminals/", include("terminal.urls")),
     path("api/route/", include("route.urls")),
-    
-
+    path("api/turns/", include("turns.urls")),
+    path("api/shift/", include("shift.urls")),
 ]
