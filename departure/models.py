@@ -25,3 +25,8 @@ class DepartureRecord(models.Model):
     protector = models.ForeignKey(getattr(settings, "AUTH_USER_MODEL", "auth.User"),
                                   on_delete=models.SET_NULL, null=True, blank=True)
     queue_entry = models.ForeignKey(WaitingTurn, on_delete=models.SET_NULL, null=True, blank=True)
+# departure/models.py (Meta)
+indexes = [
+    models.Index(fields=["from_terminal", "route", "departed_at"]),
+    models.Index(fields=["to_terminal", "route", "received"]),
+]

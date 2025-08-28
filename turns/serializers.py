@@ -9,7 +9,7 @@ from django.db.models import Max
 
 
 class WaitingTurnCreateSerializer(serializers.ModelSerializer):
-    plate_number = serializers.CharField()
+    plate_number = serializers.CharField(write_only=True)
 
     class Meta:
         model = WaitingTurn
@@ -74,7 +74,7 @@ class WaitingTurnSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WaitingTurn
-        fields = ["id", "driver", "plate_number", "route",
+        fields = ["id", "driver", "plate_number", "route", "terminal",
                   "position", "registered_at", "status", "active"]
         read_only_fields = fields
 

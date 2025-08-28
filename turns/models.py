@@ -36,3 +36,7 @@ class WaitingTurn(models.Model):
                 name="one_active_waiting_per_driver_terminal",
             ),
         ]
+
+indexes = [
+    models.Index(fields=["terminal", "route", "status", "position"]),
+]

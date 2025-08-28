@@ -37,17 +37,17 @@ class ShiftContext(models.Model):
     class Meta:
         
         constraints = [
-            models.UniqueConstraint(
-                fields=["terminal"],
-                condition=models.Q(end_time__isnull=True),
-                name="one_active_shift_per_terminal",
-            ),
-            
-            models.UniqueConstraint(
-                fields=["protector"],
-                condition=models.Q(end_time__isnull=True),
-                name="one_active_shift_per_protector",
-            ),
+             models.UniqueConstraint(
+        fields=["protector"],
+        condition=models.Q(end_time__isnull=True),
+        name="one_active_shift_per_protector",
+    ),
+    # NEW: one active shift per (terminal, route)
+    models.UniqueConstraint(
+        fields=["terminal", "route"],
+        condition=models.Q(end_time__isnull=True),
+        name="one_active_shift_per_terminal_route",
+    ),
         ]
         indexes = [
             models.Index(fields=["terminal", "end_time"]),
