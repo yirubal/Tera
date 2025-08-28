@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'terminal', 
     'turns', 
     'shift_transfer',
+    'accounts',
 
 ]
 

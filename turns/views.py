@@ -49,86 +49,68 @@ class WaitingTurnCreateView(generics.CreateAPIView):
         return ctx
 
 # GET /api/turns/waiting
+# turns/views.py
+
 class WaitingTurnListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, IsProtector]
     serializer_class = WaitingTurnSerializer
 
     def get_queryset(self):
-        shift = get_current_shift(self.request.user)
-        term = shift.terminal if shift else None
-        if not term:
+        shift = get_current_shift(self.request.user)  # must include .select_related("terminal","route")
+        if not shift or not shift.terminal:
             raise ValidationError("You don't have an active shift.")
+        if not shift.route:
+            raise ValidationError("Set a route for your active shift to view its queue.")
+
         return (WaitingTurn.objects
-                .filter(terminal=term, status="waiting")
+                .filter(
+                    terminal=shift.terminal,
+                    route=shift.route,          # ← key change: scope to this protector’s route
+                    status="waiting",
+                )
                 .order_by("position", "registered_at"))
 
-# PUT /api/turns/{id}
+
+# turns/views.py
+
 class MarkDepartedView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated, IsProtector]
+    serializer_class = DepartureMiniSerializer
 
+    queryset = WaitingTurn.objects.all()
     def put(self, request, pk:int):
         shift = get_current_shift(self.request.user)
-        term = shift.terminal if shift else None
-        if not term:
+        if not shift or not shift.terminal:
             raise ValidationError("You don't have an active shift.")
+        if not shift.route:
+            raise ValidationError("Set a route for your active shift before departing a driver.")
+
+        term  = shift.terminal
+        route = shift.route
 
         with transaction.atomic():
-            # lock all waiting rows at this terminal to prevent race
             waiting_qs = (WaitingTurn.objects
                           .select_for_update()
-                          .filter(terminal=term, status="waiting"))
+                          .filter(terminal=term, route=route, status="waiting"))  # ← include route
 
             wt = waiting_qs.filter(pk=pk).select_related("driver", "route").first()
             if not wt:
-                raise NotFound("Waiting turn not found at your terminal.")
+                raise NotFound("Waiting turn not found in your route queue.")
 
-            # Enforce FIFO: only the head can depart
             head_pos = waiting_qs.aggregate(m=Min("position"))["m"]
             if wt.position != head_pos:
-                raise ValidationError("Only the first in the queue can depart.")
+                raise ValidationError("Only the first in your route queue can depart.")
 
-            # Create departure
             dep = DepartureRecord.objects.create(
                 driver=wt.driver,
                 from_terminal=term,
-                to_terminal=wt.route.to_terminal,
-                route=wt.route,
+                to_terminal=route.to_terminal,
+                route=route,
                 protector=request.user,
                 queue_entry=wt,
             )
-            # Close waiting row
             wt.status = "done"
             wt.active = False
             wt.save(update_fields=["status", "active"])
 
         return Response(DepartureMiniSerializer(dep).data, status=status.HTTP_200_OK)
-
-# GET /api/turns/departed
-class DepartedListView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated, IsProtector]
-    serializer_class = DepartureMiniSerializer
-
-    def get_queryset(self):
-        shift  = get_current_shift(self.request.user)
-        term = shift.terminal if shift else None
-        if not term:
-            raise ValidationError("You don't have an active shift.")
-        return (DepartureRecord.objects
-                .select_related("driver", "route", "from_terminal", "to_terminal")
-                .filter(from_terminal=term, received=False)
-                .order_by("-departed_at"))
-
-# GET /api/turns/incoming
-class IncomingListView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated, IsProtector]
-    serializer_class = DepartureMiniSerializer
-
-    def get_queryset(self):
-        shift = get_current_shift(self.request.user)
-        term = shift.terminal if shift else None
-        if not term:
-            raise ValidationError("You don't have an active shift.")
-        return (DepartureRecord.objects
-                .select_related("driver", "route", "from_terminal", "to_terminal")
-                .filter(to_terminal=term, received=False)
-                .order_by("departed_at"))

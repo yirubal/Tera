@@ -32,9 +32,11 @@ class ShiftContextSerializer(serializers.ModelSerializer):
       
         if self.instance is None:
             if ShiftContext.objects.filter(protector=user, end_time__isnull=True).exists():
-                raise serializers.ValidationError("You already have an active shift. End or transfer it first.")
-            if terminal and ShiftContext.objects.filter(terminal=terminal, end_time__isnull=True).exists():
-                raise serializers.ValidationError("This terminal already has an active shift.")
+              raise serializers.ValidationError("You already have an active shift. End or transfer it first.")
+            if not Route:
+                raise serializers.ValidationError("Select a route for this shift.")
+            if ShiftContext.objects.filter(terminal=terminal, route=route, end_time__isnull=True).exists():
+               raise serializers.ValidationError("This (terminal, route) already has an active shift.")
 
         return attrs
 
