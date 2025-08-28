@@ -14,6 +14,8 @@ class WaitingTurn(models.Model):
         CANCELED = "canceled", "Canceled"
         SKIPPED = "skipped", "Skipped"
 
+
+
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
     terminal = models.ForeignKey(Terminal, on_delete=models.CASCADE)
     route = models.ForeignKey(Route, on_delete=models.CASCADE)  # direction matters
@@ -21,6 +23,9 @@ class WaitingTurn(models.Model):
     position = models.PositiveIntegerField(default=0)       # server-managed
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.WAITING)
     active = models.BooleanField(default=True)
+
+
+
 
     class Meta:
         ordering = ["position", "registered_at"]
