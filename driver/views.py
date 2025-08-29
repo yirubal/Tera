@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 class RegisterDriverView(generics.CreateAPIView):
     queryset = Driver.objects.all()
     serializer_class = DriverSerializer
-    permission_classes = [IsAuthenticated]  # Ensure the user is authenticated to register a protector profile
+    permission_classes = [IsAuthenticated]
 
 
    
@@ -25,10 +25,10 @@ class RegisterDriverView(generics.CreateAPIView):
 class DriverProfileView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DriverSerializer
     permission_classes = [IsDriver] 
-    parser_classes = [MultiPartParser, FormParser]  # allow image upload
+    parser_classes = [MultiPartParser, FormParser]  
     
     def get_object(self):
-        # Get the protector profile for the authenticated user
+    
         return self.request.user.driver_profile
     
 

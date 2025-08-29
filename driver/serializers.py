@@ -18,7 +18,7 @@ class DriverSerializer(serializers.ModelSerializer):
         model = Driver
         fields = ["id", "user", "first_name", "last_name", "email",
                   "phone_number", "plate_number", "profile_picture", "created_at"]
-        read_only_fields = ["id", "created_at", "first_name", "last_name", "email"]  # <-- explicit
+        read_only_fields = ["id", "created_at", "first_name", "last_name", "email"] 
 
     def create(self, validated_data):
         user = validated_data["user"]
@@ -38,7 +38,7 @@ class DriverSerializer(serializers.ModelSerializer):
         return Driver.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        validated_data.pop("user", None)  # never allow switching users
+        validated_data.pop("user", None)  
 
         if "plate_number" in validated_data:
             plate_number = (validated_data["plate_number"] or "").strip().replace(" ", "")

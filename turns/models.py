@@ -1,6 +1,4 @@
 from django.db import models
-
-# Create your models here.
 from django.db import models
 from terminal.models import Terminal
 from route.models import Route
@@ -18,9 +16,9 @@ class WaitingTurn(models.Model):
 
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
     terminal = models.ForeignKey(Terminal, on_delete=models.CASCADE)
-    route = models.ForeignKey(Route, on_delete=models.CASCADE)  # direction matters
+    route = models.ForeignKey(Route, on_delete=models.CASCADE) 
     registered_at = models.DateTimeField(auto_now_add=True)
-    position = models.PositiveIntegerField(default=0)       # server-managed
+    position = models.PositiveIntegerField(default=0)  
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.WAITING)
     active = models.BooleanField(default=True)
 

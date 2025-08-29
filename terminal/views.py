@@ -10,10 +10,10 @@ from terminal.serializers import TerminalSerializer
 class TerminalView(generics.ListAPIView):
     queryset = Terminal.objects.all()
     serializer_class = TerminalSerializer
-    permission_classes = [AllowAny]  # Ensure the user is authenticated to access terminal data
+    permission_classes = [AllowAny]  
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['name']  # Add fields you want to search
-    ordering_fields = ['name', 'created_at']  # Add fields you want to order by
+    search_fields = ['name']  
+    ordering_fields = ['name', 'created_at']
 
 class TerminalCreateView(generics.CreateAPIView):
     queryset = Terminal.objects.all()

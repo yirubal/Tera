@@ -1,6 +1,4 @@
 from django.shortcuts import render
-
-# Create your views here.
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError, NotFound
@@ -34,7 +32,7 @@ class DeparturesFromHereView(generics.ListAPIView):
     serializer_class = DepartureMiniSerializer
 
     def get_queryset(self):
-        shift = get_current_shift(self.request.user)  # make sure this returns terminal+route
+        shift = get_current_shift(self.request.user)  
         if not shift or not shift.terminal:
             raise ValidationError("You don't have an active shift.")
         if not shift.route:
@@ -60,7 +58,7 @@ class DeparturesFromHereView(generics.ListAPIView):
 
 
 def get_reverse_route(route):
-    # reverse means: route.to → route.from
+    
     return Route.objects.filter(
         from_terminal=route.to_terminal,
         to_terminal=route.from_terminal
@@ -80,12 +78,12 @@ class IncomingToHereView(generics.ListAPIView):
         term           = shift.terminal
         reverse_route  = get_reverse_route(shift.route)
         if not reverse_route:
-            # If you haven’t created the reverse route, nothing to receive for this lane
+        
             return DepartureRecord.objects.none()
 
         return (DepartureRecord.objects
                 .select_related("driver", "route", "from_terminal", "to_terminal")
-                .filter(to_terminal=term, route=reverse_route, received=False)  # ← only my reverse lane
+                .filter(to_terminal=term, route=reverse_route, received=False)  
                 .order_by("departed_at"))
 
 
@@ -101,12 +99,12 @@ class ReceiveDepartureView(generics.UpdateAPIView):
         if not term:
             raise ValidationError("You don't have an active shift.")
         if obj.to_terminal_id != term.id:
-            # don’t let someone at another terminal receive it
+        
             raise ValidationError("This departure is not incoming to your terminal.")
         if obj.received:
             raise ValidationError("Already received.")
         return obj
 
     def update(self, request, *args, **kwargs):
-        # call serializer.update() (marks received + timestamp)
+
         return super().update(request, *args, **kwargs)
