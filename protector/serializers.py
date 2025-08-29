@@ -17,7 +17,7 @@ class ProtectorSerializer(serializers.ModelSerializer):
         model = Protector
         fields = ["id", "user", "first_name", "last_name", "email",
                   "phone_number", "profile_picture", "created_at"]
-        read_only_fields = ["id", "created_at", "first_name", "last_name", "email"]  # <-- explicit
+        read_only_fields = ["id", "created_at", "first_name", "last_name", "email"] 
 
     def create(self, validated_data):
         user = validated_data["user"]
@@ -31,7 +31,7 @@ class ProtectorSerializer(serializers.ModelSerializer):
         return Protector.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        validated_data.pop("user", None)  # never allow switching users
+        validated_data.pop("user", None)
         if "phone_number" in validated_data:
             phone = (validated_data["phone_number"] or "").strip().replace(" ", "")
             instance.phone_number = phone or None

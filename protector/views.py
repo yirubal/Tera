@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 class RegisterProtectorView(generics.CreateAPIView):
     queryset = Protector.objects.all()
     serializer_class = ProtectorSerializer
-    permission_classes = [IsAuthenticated]  # Ensure the user is authenticated to register a protector profile
+    permission_classes = [IsAuthenticated]  
 
 
    
@@ -21,7 +21,7 @@ class RegisterProtectorView(generics.CreateAPIView):
 class ProtectorProfileView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProtectorSerializer
     permission_classes = [IsProtector] 
-    parser_classes = [MultiPartParser, FormParser]  # allow image upload
+    parser_classes = [MultiPartParser, FormParser]  
     
     def get_object(self):
         # Get the protector profile for the authenticated user

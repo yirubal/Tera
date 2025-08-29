@@ -45,7 +45,7 @@ class WaitingTurnCreateView(generics.CreateAPIView):
         ctx = super().get_serializer_context()
         shift = get_current_shift(self.request.user)
         ctx["current_terminal"] = shift.terminal if shift else None
-        ctx["current_route"]    = shift.route if shift else None  # ← selected route for this shift
+        ctx["current_route"]    = shift.route if shift else None  
         return ctx
 
 # GET /api/turns/waiting
@@ -56,7 +56,7 @@ class WaitingTurnListView(generics.ListAPIView):
     serializer_class = WaitingTurnSerializer
 
     def get_queryset(self):
-        shift = get_current_shift(self.request.user)  # must include .select_related("terminal","route")
+        shift = get_current_shift(self.request.user) 
         if not shift or not shift.terminal:
             raise ValidationError("You don't have an active shift.")
         if not shift.route:
@@ -65,7 +65,7 @@ class WaitingTurnListView(generics.ListAPIView):
         return (WaitingTurn.objects
                 .filter(
                     terminal=shift.terminal,
-                    route=shift.route,          # ← key change: scope to this protector’s route
+                    route=shift.route,  
                     status="waiting",
                 )
                 .order_by("position", "registered_at"))
@@ -91,7 +91,7 @@ class MarkDepartedView(generics.GenericAPIView):
         with transaction.atomic():
             waiting_qs = (WaitingTurn.objects
                           .select_for_update()
-                          .filter(terminal=term, route=route, status="waiting"))  # ← include route
+                          .filter(terminal=term, route=route, status="waiting"))  
 
             wt = waiting_qs.filter(pk=pk).select_related("driver", "route").first()
             if not wt:

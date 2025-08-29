@@ -26,7 +26,7 @@ class ReceiveDepartureSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = DepartureRecord
-        fields = []  # PATCH/POST without body
+        fields = []  
 
     def update(self, instance, validated_data):
         if instance.received:

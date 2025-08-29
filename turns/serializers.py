@@ -13,7 +13,7 @@ class WaitingTurnCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WaitingTurn
-        fields = ['plate_number']  # Only plate_number is input
+        fields = ['plate_number']  
         extra_kwargs = {
             'plate_number': {'required': True}
         }
@@ -21,7 +21,7 @@ class WaitingTurnCreateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         request = self.context.get("request")
         current_terminal = self.context.get('current_terminal')
-        current_route = self.context.get('current_route')  # Add this to context in your view
+        current_route = self.context.get('current_route')  
         plate_number = attrs.get('plate_number')
 
         if not current_terminal:
