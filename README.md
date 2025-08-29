@@ -68,5 +68,5 @@ It coordinates protectors, drivers, routes, shifts, and turns (waiting → depar
 
 ### 1) Clone the repo
 ```bash
-git clone https://github.com/<your-username>/Tera.git
+git clone https://github.com/yirubal/Tera.git
 cd Tera
